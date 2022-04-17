@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema({
     accessToken: {
         type: String,
         required: true
+    },
+    image: {
+        type: String
     }
 }, {versionKey: false});
 

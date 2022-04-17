@@ -9,7 +9,7 @@ const schema = gql`
 
     type Mutation {
         addFrog(name: String!, description: String!, imageUrl: String!, userId: ID!):addFrogResponse
-        Register(username: String!, password: String!):RegisterResponse
+        Register(username: String!, password: String!, image: String):RegisterResponse
         Login(username: String!, password: String!):LoginResponse
     }
 
@@ -27,6 +27,7 @@ const schema = gql`
         id: ID
         accessToken: String
         username: String
+        userImage: String
     }
 
     type RegisterResponse {
@@ -36,6 +37,7 @@ const schema = gql`
         id: ID!
         accessToken: String!
         username: String!
+        userImage: String
     }
 
     type Frog {

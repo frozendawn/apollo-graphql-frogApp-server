@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User')
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+const Image = require('../models/Image');
 
 const resolvers = {
     Query: {
@@ -13,7 +16,7 @@ const resolvers = {
         getFrog: async (_, {id}) => {
             const frog = await Frog.findById(id).populate('userId', 'username')
             return frog
-        },
+        }
     },
 
     Mutation: {
@@ -49,6 +52,7 @@ const resolvers = {
         },
         Register: async (_, args) => {
             const userExist = await User.findOne({username: args.username});
+            console.log('args',args)
             if (userExist) {
                 return {
                     code: 400,
@@ -59,7 +63,7 @@ const resolvers = {
             const hashedPassword = await bcrypt.hash(args.password , 12);
             const id = mongoose.Types.ObjectId();
             const accessToken = jwt.sign({username: args.username, id: id}, 'super-secret')
-            const newUser = new User({_id: id, username: args.username, password: hashedPassword, accessToken: accessToken});
+            const newUser = new User({_id: id, username: args.username, password: hashedPassword, accessToken: accessToken, image: args.image});
             await newUser.save();
             return {
                 code: 200,
@@ -67,7 +71,8 @@ const resolvers = {
                 message: "User registered",
                 accessToken: newUser.accessToken,
                 id: id,
-                username: newUser.username
+                username: newUser.username,
+                userImage: newUser.image
             }
         },
         Login: async (_, args) => {
@@ -79,7 +84,8 @@ const resolvers = {
                     message: 'Successful login !',
                     id: user._id,
                     accessToken: user.accessToken,
-                    username: user.username
+                    username: user.username,
+                    userImage: user.image
                 }
             }
             return {
@@ -87,7 +93,7 @@ const resolvers = {
                 success: false,
                 message: 'Invalid Credentials'
             }
-        }
+        },
     }
 }
 

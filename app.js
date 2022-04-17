@@ -4,19 +4,54 @@ const schema = require('./schema/schema');
 const resolvers = require('./resolvers/resolvers')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
-const bcrypt = require('bcrypt');
-const User = require('./models/User');
+const multer = require('multer');
+const ImagesAPI = require('./datasources/images-api');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
+app.use('*', cors())
 mongoose.connect('mongodb://localhost:27017/apollo-express');
 app.use(bodyParser.json())
 
+app.use(express.static(path.join(__dirname, 'images')));
+
+const fileStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'images')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix + '.' +file.mimetype.split('/')[1])
+    }
+  })
+
+const fileFilter = (req, file, cb) => {
+    if (
+      file.mimetype === 'image/png' ||
+      file.mimetype === 'image/jpg' ||
+      file.mimetype === 'image/jpeg'
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+  };
+
+app.use(
+multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
+);
+
 const apolloServer = new ApolloServer({
     typeDefs: schema,
-    resolvers
+    resolvers,
+    dataSources: () => {
+        return {
+          imagesApi: new ImagesAPI()
+        };
+      },
 });
-
 
 const apolloServerStart = async () => {
     await apolloServer.start();
@@ -26,17 +61,8 @@ const apolloServerStart = async () => {
 }
 apolloServerStart();
 
-
-app.post('/login', async (req, res, next) => {
-    const user = await User.findOne({username: req.body.username });
-    if (user) {
-        if(await bcrypt.compare(req.body.password, user.password)) {
-            req.isAuthenticated = true;
-            res.json(user)
-        } else {
-            res.json({message: "invalid credentials"})
-        }
-    }
+app.post('/upload-image', (req, res, next) => {
+    res.json({imageUrl: `http://localhost:5000/${req.file.filename}`})
 })
 
 app.listen(5000, () => {
