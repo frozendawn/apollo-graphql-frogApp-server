@@ -11,6 +11,7 @@ const schema = gql`
         addFrog(name: String!, description: String!, imageUrl: String!, userId: ID!):addFrogResponse
         Register(username: String!, password: String!, image: String):RegisterResponse
         Login(username: String!, password: String!):LoginResponse
+        incrementFrogViews(id: ID!):IncrementFrogViewsResponse!
     }
 
     type addFrogResponse {
@@ -45,6 +46,7 @@ const schema = gql`
         name: String!
         description: String!
         imageUrl: String!
+        numberOfViews: Int!
         userId: User!
     }
 
@@ -52,6 +54,12 @@ const schema = gql`
         id: ID!
         username: String!
     }
+    type IncrementFrogViewsResponse {
+    code: Int!
+    success: Boolean!
+    message: String!
+    frog: Frog
+  }
 `;
 
 

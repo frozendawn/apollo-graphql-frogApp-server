@@ -94,6 +94,24 @@ const resolvers = {
                 message: 'Invalid Credentials'
             }
         },
+        incrementFrogViews: async (_, {id}, {dataSources}) => {
+            try {
+                const response = await dataSources.imagesAPI.incrementFrogViews(id);
+                return {
+                    code: 200,
+                    success: true,
+                    message: "Successfuly incremented frog views.",
+                    frog: response
+                  }
+            } catch (error) {
+                console.log('error in incrementFrogViews:', error)
+                return {
+                    code: 500,
+                    success: false,
+                    message: "Failed to increment frog views."
+                  }
+            }
+        }
     }
 }
 

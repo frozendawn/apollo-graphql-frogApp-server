@@ -13,6 +13,11 @@ const frogSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    numberOfViews: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

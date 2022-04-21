@@ -8,6 +8,7 @@ const multer = require('multer');
 const ImagesAPI = require('./datasources/images-api');
 const cors = require('cors');
 const path = require('path');
+const Frog = require('./models/Frog');
 
 const app = express();
 
@@ -48,7 +49,7 @@ const apolloServer = new ApolloServer({
     resolvers,
     dataSources: () => {
         return {
-          imagesApi: new ImagesAPI()
+          imagesAPI: new ImagesAPI()
         };
       },
 });
@@ -63,6 +64,11 @@ apolloServerStart();
 
 app.post('/upload-image', (req, res, next) => {
     res.json({imageUrl: `http://localhost:5000/${req.file.filename}`})
+})
+
+app.patch('/incrementFrogViews/:id', async (req, res) => {
+  const frog = await Frog.findByIdAndUpdate(req.params.id, { $inc: { numberOfViews : 1 }}, {new: true});
+  res.json(frog)
 })
 
 app.listen(5000, () => {
