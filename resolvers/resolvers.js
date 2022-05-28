@@ -52,7 +52,6 @@ const resolvers = {
         },
         Register: async (_, args) => {
             const userExist = await User.findOne({username: args.username});
-            console.log('args',args)
             if (userExist) {
                 return {
                     code: 400,
@@ -62,8 +61,8 @@ const resolvers = {
             }
             const hashedPassword = await bcrypt.hash(args.password , 12);
             const id = mongoose.Types.ObjectId();
-            const accessToken = jwt.sign({username: args.username, id: id}, 'super-secret')
-            const newUser = new User({_id: id, username: args.username, password: hashedPassword, accessToken: accessToken, image: args.image});
+            const accessToken = jwt.sign({username: args.username, id: id, role: args.role}, 'super-secret')
+            const newUser = new User({_id: id, username: args.username, password: hashedPassword, accessToken: accessToken, image: args.image, role: 'user'});
             await newUser.save();
             return {
                 code: 200,
@@ -72,7 +71,8 @@ const resolvers = {
                 accessToken: newUser.accessToken,
                 id: id,
                 username: newUser.username,
-                userImage: newUser.image
+                userImage: newUser.image,
+                role: newUser.role,
             }
         },
         Login: async (_, args) => {
@@ -85,6 +85,7 @@ const resolvers = {
                     id: user._id,
                     accessToken: user.accessToken,
                     username: user.username,
+                    role: user.role,
                     userImage: user.image
                 }
             }
@@ -110,6 +111,27 @@ const resolvers = {
                     success: false,
                     message: "Failed to increment frog views."
                   }
+            }
+        },
+        //trqbva da updatena cache-a kato iztriq jaba
+        removeFrog: async (_, {id}, {role, dataSources}) => {
+            if (role === 'admin') {
+                const response = await dataSources.imagesAPI.removeFrogById(id);
+                if (response) {
+                    return {
+                        code: 200,
+                        success: true,
+                        message: "Sucessfully removed frog",
+                        frog: response
+                    }
+                }
+            }
+            else {
+                return {
+                    code: 401,
+                    success: false,
+                    message: 'Unauthorized'
+                }
             }
         }
     }

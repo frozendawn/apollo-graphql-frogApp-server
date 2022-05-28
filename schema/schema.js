@@ -12,6 +12,14 @@ const schema = gql`
         Register(username: String!, password: String!, image: String):RegisterResponse
         Login(username: String!, password: String!):LoginResponse
         incrementFrogViews(id: ID!):IncrementFrogViewsResponse!
+        removeFrog(id: ID!):RemoveFrogResponse
+    }
+
+    type RemoveFrogResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
+        frog: Frog
     }
 
     type addFrogResponse {
@@ -29,6 +37,7 @@ const schema = gql`
         accessToken: String
         username: String
         userImage: String
+        role: String
     }
 
     type RegisterResponse {
@@ -39,6 +48,7 @@ const schema = gql`
         accessToken: String!
         username: String!
         userImage: String
+        role: String!
     }
 
     type Frog {
@@ -53,6 +63,7 @@ const schema = gql`
     type User {
         id: ID!
         username: String!
+        role: String!
     }
     type IncrementFrogViewsResponse {
     code: Int!
