@@ -61,7 +61,6 @@ const apolloServer = new ApolloServer({
       },
     context: async ({req}) => {
       const token = req.headers.authorization;
-
       if (token) {
         try {
           const decoded = jwt.verify(token, 'super-secret');

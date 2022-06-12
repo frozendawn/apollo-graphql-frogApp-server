@@ -64,6 +64,7 @@ const schema = gql`
         id: ID!
         username: String!
         role: String!
+        image: String
     }
     type IncrementFrogViewsResponse {
     code: Int!

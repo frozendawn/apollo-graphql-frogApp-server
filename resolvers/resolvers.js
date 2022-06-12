@@ -14,7 +14,7 @@ const resolvers = {
             return frogs;
         },
         getFrog: async (_, {id}) => {
-            const frog = await Frog.findById(id).populate('userId', 'username')
+            const frog = await Frog.findById(id).populate('userId','username image role _id')
             return frog
         }
     },
@@ -121,7 +121,7 @@ const resolvers = {
                     return {
                         code: 200,
                         success: true,
-                        message: "Sucessfully removed frog",
+                        message: "Sucessfully removed frog.",
                         frog: response
                     }
                 }
