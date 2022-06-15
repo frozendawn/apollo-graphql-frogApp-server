@@ -1,9 +1,10 @@
 const { RESTDataSource } = require('apollo-datasource-rest');
+require('dotenv').config();
 
 class ImagesAPI extends RESTDataSource {
   constructor() {
     super();
-    this.baseURL = 'http://localhost:5000';
+    this.baseURL = `http://localhost:${process.env.DEFAULT_PORT}`;
   }
   
   async incrementFrogViews(id) {

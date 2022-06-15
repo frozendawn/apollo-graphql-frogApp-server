@@ -11,6 +11,7 @@ const path = require('path');
 const Frog = require('./models/Frog');
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
+require('dotenv').config();
 
 const app = express();
 
@@ -77,16 +78,16 @@ const apolloServer = new ApolloServer({
     }
 });
 
-const apolloServerStart = async () => {
+(async () => {
     await apolloServer.start();
     apolloServer.applyMiddleware({
         app
     });
-}
-apolloServerStart();
+})();
+
 
 app.post('/upload-image', (req, res, next) => {
-  res.json({imageUrl: `http://localhost:5000/${req.file.filename}`})
+  res.json({imageUrl: `http://localhost:${process.env.DEFAULT_PORT}/${req.file.filename}`})
 })
 
 app.patch('/incrementFrogViews/:id', async (req, res) => {
@@ -100,10 +101,6 @@ app.patch('/incrementFrogViews/:id', async (req, res) => {
     await redisClient.SETEX(`/incrementFrogViews/${req.params.id}`, REDIS_DEFAULT_EXPIRATION, JSON.stringify(frog));
     res.json(frog);
   } */
-})
-
-app.get(`/getUserRoleById/:id`, (req, res, next) => {
-  
 })
 
 app.delete('/frog/:id', async (req, res) => {
@@ -125,6 +122,6 @@ app.delete('/frog/:id', async (req, res) => {
   }
 })
 
-app.listen(5000, () => {
-    console.log('express listing on port 5000')
+app.listen(process.env.DEFAULT_PORT, () => {
+    console.log(`express listing on port ${process.env.DEFAULT_PORT}`)
 })
