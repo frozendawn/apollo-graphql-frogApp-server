@@ -16,6 +16,10 @@ const resolvers = {
         getFrog: async (_, {id}) => {
             const frog = await Frog.findById(id).populate('userId','username image role _id')
             return frog
+        },
+        getUsers: async () => {
+            const users = await User.find({role: {$nin: ['admin','moderator']}})
+            return users;
         }
     },
 
@@ -78,12 +82,13 @@ const resolvers = {
         Login: async (_, args) => {
             const user = await User.findOne({username: args.username});
             if (user && await bcrypt.compare(args.password, user.password)) {
+                const accessToken = jwt.sign({username: user.username, id: user._id, role: user.role}, 'super-secret')
                 return {
                     code: 200,
                     success: true,
                     message: 'Successful login !',
                     id: user._id,
-                    accessToken: user.accessToken,
+                    accessToken: accessToken,
                     username: user.username,
                     role: user.role,
                     userImage: user.image
@@ -132,6 +137,13 @@ const resolvers = {
                     success: false,
                     message: 'Unauthorized'
                 }
+            }
+        },
+        makeModerator: async (_ , {id}, {role}) => {
+            if (role !== 'admin') return;
+            const user = await User.findByIdAndUpdate(id, {role: 'moderator'}, {new: true});
+            return {
+                user
             }
         }
     }

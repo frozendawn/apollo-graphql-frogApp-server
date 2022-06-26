@@ -5,6 +5,7 @@ const schema = gql`
     type Query {
         getFrogs: [Frog!]!
         getFrog(id: ID!):Frog
+        getUsers: [User!]!
     }
 
     type Mutation {
@@ -13,6 +14,11 @@ const schema = gql`
         Login(username: String!, password: String!):LoginResponse
         incrementFrogViews(id: ID!):IncrementFrogViewsResponse!
         removeFrog(id: ID!):RemoveFrogResponse
+        makeModerator(id: ID!):MakeModeratorResponse
+    }
+
+    type MakeModeratorResponse {
+        user: User
     }
 
     type RemoveFrogResponse {
@@ -54,7 +60,7 @@ const schema = gql`
     type Frog {
         id: ID!
         name: String!
-        description: String!
+        description: String! @deprecated(reason: "spri da polzva6 tova pole polzvai edi si koe")
         imageUrl: String!
         numberOfViews: Int!
         userId: User!
