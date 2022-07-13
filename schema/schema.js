@@ -39,20 +39,15 @@ const schema = gql`
         code: Int!
         success: Boolean!
         message: String!
-        id: ID
         accessToken: String
-        username: String
         userImage: String
-        role: String
     }
 
     type RegisterResponse {
         code: Int!
         success: Boolean!
         message: String!
-        id: ID!
         accessToken: String!
-        username: String!
         userImage: String
         role: String!
     }
@@ -60,7 +55,7 @@ const schema = gql`
     type Frog {
         id: ID!
         name: String!
-        description: String! @deprecated(reason: "spri da polzva6 tova pole polzvai edi si koe")
+        description: String!
         imageUrl: String!
         numberOfViews: Int!
         userId: User!

@@ -73,8 +73,6 @@ const resolvers = {
                 success: true,
                 message: "User registered",
                 accessToken: newUser.accessToken,
-                id: id,
-                username: newUser.username,
                 userImage: newUser.image,
                 role: newUser.role,
             }
@@ -87,10 +85,7 @@ const resolvers = {
                     code: 200,
                     success: true,
                     message: 'Successful login !',
-                    id: user._id,
                     accessToken: accessToken,
-                    username: user.username,
-                    role: user.role,
                     userImage: user.image
                 }
             }
