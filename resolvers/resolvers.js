@@ -60,7 +60,8 @@ const resolvers = {
                 return {
                     code: 400,
                     success: false,
-                    message: "Invalid credentials"
+                    message: "Username taken !",
+                    role: null
                 }
             }
             const hashedPassword = await bcrypt.hash(args.password , 12);
