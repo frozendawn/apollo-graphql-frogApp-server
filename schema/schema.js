@@ -47,7 +47,7 @@ const schema = gql`
         code: Int!
         success: Boolean!
         message: String!
-        accessToken: String!
+        accessToken: String
         userImage: String
         role: String!
     }
